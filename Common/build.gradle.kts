@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     //
@@ -15,17 +15,18 @@ android {
         minSdk = 26
         
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-        versionCode = 1
-        versionName = "0.1.0"
     }
     
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -34,6 +35,19 @@ android {
     }
     kotlin {
         jvmToolchain(8)
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.Arshia-Rahimi"
+                artifactId = "Common-Kotlin-Utilities"
+                version = "0.1.13"
+            }
+        }
     }
 }
 
@@ -57,10 +71,4 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     // dataStore
     implementation(libs.datastore)
-    // media3
-    implementation(libs.media3.ui)
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.exoplayer.dash)
-    implementation(libs.media3.session)
-    implementation(libs.media3.hls)
 }
